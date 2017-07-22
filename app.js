@@ -22,7 +22,7 @@ app.get('/api/imageSearch/:name', (req, res) => {
         page: page
     }).then((images) => {
         if (images.length > 0) {
-            mongo.connect(dbUrl, (err, docs) => {
+            mongo.connect(dbUrl, (err, db) => {
                 if (err) {
                     res.json(images);
                 } else {
@@ -40,7 +40,7 @@ app.get('/api/imageSearch/:name', (req, res) => {
 });
 
 app.get('/api/latest/imageSearch', (req, res) => {
-    mongo.connect(dbUrl, (err, docs) => {
+    mongo.connect(dbUrl, (err, db) => {
         var imageSearchList = db.collection('imageSearchList');
         imageSearchList.find({}, {_id: 0}).sort({_id: -1}).limit(10).toArray((err, docs) => {
             if (err) {
