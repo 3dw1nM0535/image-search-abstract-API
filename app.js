@@ -22,7 +22,19 @@ app.get('/api/imageSearch/:name', (req, res) => {
         page: page
     }).then((images) => {
         if (images.length > 0) {
-            mongo.connect()
+            mongo.connect(dbUrl, (err, docs) => {
+                if (err) {
+                    res.json(images);
+                } else {
+                    var imageSearchList = db.collection('imageSearchList');
+                    imageSearchList.insert({term: imageName, when: date}, () => {
+                        db.close();
+                        res.json(images);
+                    });
+                }
+            })
+        } else {
+            res.send("Something just went nuts! Come when i have checked it out");
         }
     })
 });
