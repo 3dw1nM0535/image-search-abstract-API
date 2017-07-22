@@ -39,6 +39,24 @@ app.get('/api/imageSearch/:name', (req, res) => {
     })
 });
 
+app.get('/api/latest/imageSearch', (req, res) => {
+    mongo.connect(dbUrl, (err, docs) => {
+        var imageSearchList = db.collection('imageSearchList');
+        imageSearchList.find({}, {_id: 0}).sort({_id: -1}).limit(10).toArray((err, docs) => {
+            if (err) {
+                db.close();
+                res.send("Something just went nuts! Come back when i have checked it out");
+            } else {
+                db.close();
+                res.json(docs);
+            }
+        });
+    });
+});
+
+app.get('*', (req, res) => {
+    res.send(req.headers);
+});
 
 app.listen(port, '127.0.0.1', () => {
     console.log("Connection to server on port 3000 alive!");
